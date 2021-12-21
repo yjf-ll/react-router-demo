@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+## react-router-dom  v6  使用记录
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- #### 项目中安装react路由
 
-## Available Scripts
+  > yarn add react-router-dom
 
-In the project directory, you can run:
+- #### 基本使用方法
 
-### `npm start`
+  > 在根组件中：
+  >
+  > 用BrowserRouter组件包裹Routers组件，在Routers里面设置一个根路由组件，在根路由组件中设置平级的路由，想共享父组件ui的话，可以添加下面的outlet组件
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+  ```react
+  function Main() {
+    return (
+      <div>
+        <h2>react-router</h2>
+        <Link to="/home">home</Link>
+        <Link to="/about">about</Link>
+        // 想共享父组件ui的话，可以添加下面的outlet组件
+        <Outlet/>
+      </div>
+    )
+  }
+  /**********以下是根精简的代码********/
+  export default function App() {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Main/>}>
+            <Route path="home" element={<Home/>} />
+            <Route path="about" element={<About/>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    )
+  }
+  ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- #### 在根路由中设置默认路由
 
-### `npm test`
+  > 如果没有点击link组件的话，页面默认就是展示main的内容，当然也可以设置一个默认路由
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  ```react
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Main/>}>
+          
+        // 根路由中默认就会展示该index路由
+        <Route index element={<Home />} />
+          
+        <Route path="home" element={<Home/>} />
+        <Route path="about" element={<About/>} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+  ```
 
-### `npm run build`
+- #### 路由传值
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  > 直接看代码
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  ```react
+  import {useParams} from "react-router-dom";
+  
+  function Item() {
+    const {itemId} = useParams();
+  
+    const info = getItemInfo(itemId);
+  
+    console.log(info)
+  
+    return (
+      <div>
+        <div>name: {info.name}</div>
+        <div>amount: {info.amount}</div>
+        <div>number: {info.number}</div>
+        <div>due: {info.due}</div>
+      </div>
+    )
+  }
+  /**********/
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Main/>}>
+        <Route index element={<Home />} />
+        <Route path="/home" element={<Home/>}/>
+        <Route path="/about" element={<About/>}>
+          // 该路径的组件可以使用useParams()来获取itemId
+          <Route path=":itemId" element={<Item/>}/>
+        </Route>
+      </Route>
+      <Route path="*" element={<Unknown/>}/>
+    </Routes>
+  </BrowserRouter>
+  ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
